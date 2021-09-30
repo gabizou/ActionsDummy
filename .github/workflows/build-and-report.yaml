@@ -10,6 +10,9 @@ jobs:
   build:
     name: "Build Image"
     runs-on: ubuntu-20.04
+    # These permissions are only necessary to read/publish to
+    # GitHub Container Registry, in other cases, it's dependent
+    # on the login permissions.
     permissions:
       contents: read
       packages: write
@@ -32,5 +35,5 @@ jobs:
           curl -X POST https://api.github.com/repos/gabizou/actionsreceiverdummy/dispatches \
                             -H 'Accept: application/vnd.github.everest-preview+json' \
                             -u ${{ secrets.REPO_TOKEN }} \
-                           --data '{"event_type": "ping", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "image_sha": "'"${{ env.image_sha }}"'" } }'
+                           --data '{"event_type": "ping", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "image_sha": "${{ env.image_sha }}" } }'
 
