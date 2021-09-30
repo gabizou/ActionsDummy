@@ -19,4 +19,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: |
          docker build . -t gabizou/golang-ci-actions:1.15 -t gabizou/golang-ci-actions:latest -f Dockerfile
-      - run: docker push gabizou/golang-ci-actions:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: gabizou/golang-ci-actions:latest
