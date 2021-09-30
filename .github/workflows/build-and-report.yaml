@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: |
          docker build . -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:1.15 -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest -f Dockerfile
-         image_sha=${docker inspect --format='{{index .RepoDigests 0}}' ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}}
+         image_sha=${docker inspect --format='{{index .Id}}' ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}}
           echo $image_sha
          echo "image_sha=$image_sha" >> $GITHUB_ENV
       - name: Build and push Docker image
