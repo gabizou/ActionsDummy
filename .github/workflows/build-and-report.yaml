@@ -1,0 +1,22 @@
+name: "Build Docker Image And Call Remote"
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: "Build Image"
+    runs-on: ubuntu-20.04
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+         docker build . -t gabizou/golang-ci-actions:1.15 -t gabizou/golang-ci-actions:latest -f Dockerfile
+      - run: docker push ghcr.io/gabizou/golang-ci-actions:latest
