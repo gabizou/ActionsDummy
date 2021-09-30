@@ -23,14 +23,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - run: |
-         docker build . -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:1.15 -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest -f Dockerfile
-         digest=$(docker inspect --format='{{index .RepoDigests}}' ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }})
-         image_sha=$(echo "$digest" | sed -e "s/^ghcr\.io\/gabizou\/golang-ci-actions\@//")
-         echo $image_sha
-         echo "image_sha=$image_sha" >> $GITHUB_ENV
-      - name: Build and push Docker image
-        run: docker push ghcr.io/gabizou/golang-ci-actions:latest
+      - name: "Build and push Docker image"
+        run: |
+          docker build . -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:1.15 -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest -f Dockerfile
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:1.15
+      - name: "Get image digest"
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          digest=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }})
+          image_sha=$(echo "$digest" | sed -e "s/^ghcr\.io\/gabizou\/golang-ci-actions\@//")
+          echo $image_sha
+          echo "image_sha=$image_sha" >> $GITHUB_ENV
       - name: "Notify ActionsReceiverDummy"
         run: |
           curl -X POST https://api.github.com/repos/gabizou/actionsreceiverdummy/dispatches \
