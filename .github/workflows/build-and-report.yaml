@@ -35,5 +35,5 @@ jobs:
           curl -X POST https://api.github.com/repos/gabizou/actionsreceiverdummy/dispatches \
                             -H 'Accept: application/vnd.github.everest-preview+json' \
                             -u ${{ secrets.REPO_TOKEN }} \
-                           --data '{"event_type": "ping", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "image_sha": "${{ env.image_sha }}" } }'
+                           --data '{"event_type": "image_uploaded", "client_payload": { "repository": "'"$GITHUB_REPOSITORY"'", "image_sha": "${{ env.image_sha }}" } }'
 
