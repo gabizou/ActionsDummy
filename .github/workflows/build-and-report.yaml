@@ -25,7 +25,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: |
          docker build . -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:1.15 -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest -f Dockerfile
-         image_sha=$(docker inspect --format='{{index .Id}}' ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }})
+         digest=$(docker inspect --format='{{index .RepoDigests}}' ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }})
+         image_sha=$(echo "$digest" | sed -e "s/^ghcr\.io\/gabizou\/golang-ci-actions\@//")
          echo $image_sha
          echo "image_sha=$image_sha" >> $GITHUB_ENV
       - name: Build and push Docker image
