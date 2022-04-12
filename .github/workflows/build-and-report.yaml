@@ -28,13 +28,13 @@ jobs:
           token: ${{ secrets.REPO_TOKEN }}
       - name: "Push file as new commit"
         run: |
-          echo "TARGET_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
-          echo ${{ env.TARGET_TAG }}
-          env
           rm -rf target/generated.txt
           cp source/generated.txt target
           cd target
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions Bot"
           git add generated.txt
-          git commit -m "Update generated files for ${{ env.TARGET_TAG }}"
+          git commit -m "Update generated files for ${GITHUB_REF_NAME}"
+          git tag -a "${GITHUB_REF_NAME}" -m \""${GITHUB_REF_NAME}"\"
+          git push origin main
+          git push -f origin "${GITHUB_REF_NAME}"
